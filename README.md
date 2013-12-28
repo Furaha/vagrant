@@ -27,7 +27,9 @@ For amd64 `vagrant box add precise http://cloud-images.ubuntu.com/vagrant/precis
 
 `cd <some_project_directory>`
 
-`vagrant init precise`
+`git clone https://github.com/arafatm/vagrant_furaha.git .`
+
+`rm -rf .git/`
 
 `vagrant up`
 
