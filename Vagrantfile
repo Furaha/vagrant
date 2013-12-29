@@ -5,13 +5,14 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = 'precise'
-  config.vm.hostname = 'precise'
+  # Either use i386 or amd64 versions
+  config.vm.box       = 'cloud32'
+  config.vm.box_url  = 'http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-i386-vagrant-disk1.box'
+  #config.vm.box       = 'cloud64'
+  # config.vm.box_url  = 'http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box'
 
-  config.vm.network :forwarded_port, guest: 3000, host: 3000
+  config.vm.hostname  = 'vm'
 
   config.vm.provision :shell, :path => "bootstrap.sh"
-
-  # Clean up box when packaging
-  # config.vm.provision :shell, :path => "cleanup.sh"
+  config.vm.provision :shell, :path => "cleanup.sh"
 end

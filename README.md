@@ -17,6 +17,8 @@ Bootstrap script to install:
 
 This should get you started with local rails 4 development.
 
+You can download a built 32bit box from https://www.dropbox.com/s/rus3bnksldg0fh6/furaha32.box
+
 # Usage
 
 For i386 `vagrant box add precise http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-i386-vagrant-disk1.box` 
