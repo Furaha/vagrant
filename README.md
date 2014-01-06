@@ -45,11 +45,23 @@ In Vagrantfile, uncomment `cleanup.sh`
 
 `vagrant reload --provision && vagrant halt`
 
+*Note* On windows you want to add the VBobxManage.exe instead
+of vboxmanage. To make it easier, `set PATH=%PATH%;C:\Program
+Files\Oracle\VirtualBox` 
+
 `vboxmanage clonehd <disk file>.vmdk <disk file>.vdi --format VDI`
 
 `vboxmanage modifyhd --compact <disk file>.vdi`
 
-`vagrant package --base <machine name>`
+In VirtualBox, click on `settings` for your machine and under
+`Storage`, point the machine at the new vdi created above.
+
+In VirtualBox, start the virtual machine into `recovery` mode -> `root` mode
+and do:
+- umount /dev/sda1
+- zerofree /dev/sda1
+
+`vagrant package` should create a box file for you to use 
 
 # Credit
 
