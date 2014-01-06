@@ -51,15 +51,16 @@ Files\Oracle\VirtualBox`
 
 `vboxmanage clonehd <disk file>.vmdk <disk file>.vdi --format VDI`
 
+In VirtualBox, start the virtual machine into `recovery` mode -> `root` mode
+and do:
+- `umount /dev/sda1`
+- `zerofree /dev/sda1`
+- halt the machine
+
 `vboxmanage modifyhd --compact <disk file>.vdi`
 
 In VirtualBox, click on `settings` for your machine and under
 `Storage`, point the machine at the new vdi created above.
-
-In VirtualBox, start the virtual machine into `recovery` mode -> `root` mode
-and do:
-- umount /dev/sda1
-- zerofree /dev/sda1
 
 `vagrant package` should create a box file for you to use 
 

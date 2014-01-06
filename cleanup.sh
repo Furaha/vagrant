@@ -53,20 +53,4 @@ find /var/log -type f | while read f; do echo -ne '' > $f; done;
 echo
 echo
 echo "------------------------------"
-echo "The following steps are manual."
-echo "Using Virtualbox, boot into 'recovery' -> 'root' mode and run:"
-echo "  - umount /dev/sda1"
-echo "  - zerofree -v /dev/sda1"
-echo
-echo
-echo "Note: On windows, add the path to vboxmanage:"
-echo "set PATH=%PATH%;C:\\Program Files\\Oracle\\VirtualBox"
-echo
-echo "Then find the vmdk used to compact as vdi prior to packaging:"
-echo "  vboxmanage clonehd <disk file>.vmdk <disk file>.vdi --format VDI"
-echo "  vboxmanage modifyhd --compact <disk file>.vdi"
-echo
-echo "Using Virtualbox, point the disk at the new vdi created then"
-echo "  vagrant package" 
-echo
-echo "You should now have a *.box file that you can distribute"
+echo "Box provisioned. Ready to use"

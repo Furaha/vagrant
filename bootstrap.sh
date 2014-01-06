@@ -38,10 +38,15 @@ echo
 echo "---------- Install ruby 2.1.0 stable"
 mkdir ~/tmp
 cd ~/tmp
-wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.0.tar.gz
-tar xvzf ruby-2.1.0.tar.gz
-cd ruby-2.1.0 
-./configure  --prefix=/usr --docdir=/usr/share/doc/ruby-2.1.0 --enable-shared && make && make install 
+
+if [ ! "$(expr substr "$(ruby -v)" 1 10)" == "ruby 2.1.0" ]; then
+  wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.0.tar.gz
+  tar xvzf ruby-2.1.0.tar.gz
+  cd ruby-2.1.0 
+  ./configure  --prefix=/usr --docdir=/usr/share/doc/ruby-2.1.0 --enable-shared && make && make install 
+else
+  echo "ruby 2.1.0 already installed"
+fi
 
 echo
 echo
