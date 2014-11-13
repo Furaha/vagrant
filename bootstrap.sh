@@ -2,17 +2,23 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt_update
+run_bootstrap() {
+#  apt_update
 
-install_ruby
-install_postgresql
+  install_ruby
+#  install_postgresql
 
-apt_clean
+#  apt_clean
+}
 
 msg() {
   echo "----------"
   echo "----------"
   echo "---------- $1"
+}
+
+apt() {
+  apt-get install -y --force-yes $1
 }
 
 apt_update() {
@@ -24,16 +30,7 @@ apt_update() {
   apt-get dist-upgrade -q -y --force-yes 
 
   msg "Install packages I like"
-  apt-get install -y --force-yes curl git screen vim  zerofree
-
-  msg "Install ruby build dependency packages"
-  apt-get install -y --force-yes make g++ build-essential autoconf
-  apt-get install -y --force-yes nodejs libxml2-dev libsqlite3-dev 
-  apt-get install -y --force-yes zlib1g zlib1g-dev libyaml-dev libssl-dev 
-  apt-get install -y --force-yes libgdbm-dev libreadline6 libreadline6-dev 
-  apt-get install -y --force-yes libpq-dev libffi-dev
-  apt-get install -y --force-yes libreadline-dev libncurses5-dev
-
+  apt "curl git screen tmux vim zerofree"
 }
 apt_clean() {
   msg "APT clean"
@@ -52,14 +49,11 @@ install_ruby() {
 
     # node.js (needed for rails_
     if [[ ! -f /etc/apt/sources.list.d/chris-lea* ]]; then 
-      sudo add-apt-repository ppa:chris-lea/node.js
+      add-apt-repository ppa:chris-lea/node.js
     fi
 
     msg "base utils"
-    sudo apt-get update
-    sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev \
-      libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev \
-      libxslt1-dev libcurl4-openssl-dev python-software-properties nodejs
+    apt "git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties nodejs"
 
     msg "rbenv"
     /usr/bin/git clone git://github.com/sstephenson/rbenv.git $HOME/.rbenv
@@ -94,12 +88,12 @@ install_postgresql() {
   msg "postgresql"
 
   if [ ! -f /etc/apt/sources.list.d/pgdg.list ]; then 
-    sudo sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ \
+    sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ \
       $(lsb_release -sc)-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
     wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
-      sudo apt-key add -
-    sudo apt-get update
-    sudo apt-get install postgresql-common postgresql-9.3 libpq-dev
+      apt-key add -
+    apt-get update
+    apt "postgresql-common postgresql-9.3 libpq-dev"
 
     msg "enter a postgresql username"
     read name
@@ -111,3 +105,5 @@ install_postgresql() {
     msg "  postgres=# \password password"
   fi
 }
+
+run_bootstrap
