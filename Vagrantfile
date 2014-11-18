@@ -5,6 +5,10 @@
 # Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
+unless Vagrant.has_plugin?("vagrant-vbguest")
+  system("vagrant plugin install vagrant-vbguest")
+end
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Either use i386 or amd64 versions
   config.vm.box       = 'ubuntu/trusty32'
@@ -12,9 +16,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.hostname  = 'vm'
   config.ssh.forward_agent = true
 
-  config.vm.provision :shell, :path => "vagrant/bootstrap.sh"
-  config.vm.provision :shell, :path => "vagrant/dev.sh", 
-    :args => "#{ENV['user']}", privileged: false
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+  end
 
-  #config.vm.provision :shell, :path => "cleanup.sh"
+
+  user = ENV['USER']
+  config.vm.provision :shell, :path => "bootstrap.sh", 
+    :args => [ENV['USER']], privileged: false
 end

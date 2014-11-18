@@ -7,7 +7,21 @@ msg() {
   echo "$1"
 }
 
+install_ruby() {
+  mkdir $HOME/tmp
+  cd $HOME/tmp
+
+  wget -O ruby-install-0.5.0.tar.gz \
+    https://github.com/postmodern/ruby-install/archive/v0.5.0.tar.gz
+  tar -xzvf ruby-install-0.5.0.tar.gz
+  cd ruby-install-0.5.0/
+  sudo make install
+
+  ruby-install ruby # install latest stable version
+}
+
 install_dotfiles() {
+  msg "Installing $user dotfiles"
   if [[ ! -d $HOME/dotfiles ]]; then 
     msg "installing dotfiles" 
     git clone https://github.com/$user/dotfiles.git $HOME/dotfiles
@@ -19,33 +33,10 @@ install_dotfiles() {
   fi
 }
 
-install_ruby() {
-  if ! command -v rbenv >/dev/null 2>&1; then
-    msg "installing rbenv"
-    /usr/bin/git clone git://github.com/sstephenson/rbenv.git $HOME/.rbenv
-
-    msg "rbenv: ruby-build"
-    /usr/bin/git clone git://github.com/sstephenson/ruby-build.git \
-      $HOME/.rbenv/plugins/ruby-build
-
-    msg "rbenv: rbenv-gem-rehash"
-    git clone https://github.com/sstephenson/rbenv-gem-rehash.git \
-      $HOME/.rbenv/plugins/rbenv-gem-rehash
-
-  else
-    msg "updating ruby version"
-  fi
-
-  msg "latest ruby"
-
-  rbenv=$HOME/.rbenv/bin/rbenv
-  LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1`
-
-  CONFIGURE_OPTS="--disable-install-doc" $rbenv install $LATEST 
-  $rbenv global  $LATEST
-  $rbenv rehash
-
+bundle_install() {
+  cd /vagrant
+  bundle install
 }
 
-install_dotfiles
 install_ruby
+install_dotfiles
