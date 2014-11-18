@@ -115,11 +115,11 @@ bundle_install() {
   bundle install
 }
 
-#apt_3rd_party
-#apt_upgrade
-#apt_core
-#postgres
-#apt_clean
-#
-#install_ruby
+apt_3rd_party
+apt_upgrade
+apt_core
+postgres
+apt_clean
+
+install_ruby
 install_dotfiles
