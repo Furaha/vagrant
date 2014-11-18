@@ -2,6 +2,13 @@
 
 - [Vagrant](http://docs.vagrantup.com/v2/)
 
+# QuickStart
+
+Copy `Vagrantfile` and `botstrap.sh` to a directory and run `vagrant up`.
+
+Take a look at `install_ruby()` in bootstrap.sh if you'd like to specify a ruby
+version
+
 # Description
 
 My scripts to build and/or package a basebox.
