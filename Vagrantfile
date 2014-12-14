@@ -20,8 +20,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.memory = 1024
   end
 
-
-  user = ENV['USER']
+  # args:
+  #   1 user to copy dotfiles
+  #   2 ruby version to install
   config.vm.provision :shell, :path => "bootstrap.sh", 
-    :args => [ENV['USER']], privileged: false
+    :args => [ENV['USER'], '2.1.5' ], privileged: false
 end

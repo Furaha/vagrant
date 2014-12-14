@@ -1,7 +1,8 @@
 #!/usr/bin/env bash 
 
 export DEBIAN_FRONTEND=noninteractive 
-user=$1
+USER=$1
+RUBY=$2
 
 msg() { echo "*" echo "*"
   echo "*****************************************************************"
@@ -23,7 +24,7 @@ apt_3rd_party() {
   # postgresql repo
   if [ ! -f /etc/apt/sources.list.d/pgdg.list ]; then 
     msg "adding postgresql repo"
-    sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ \
+    sudo sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ \
       $(lsb_release -sc)-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
     wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
       apt-key add -
@@ -33,7 +34,7 @@ apt_3rd_party() {
 apt_upgrade() {
   msg "APT update & upgrade"
 
-  ntpdate ntp.ubuntu.com
+  sudo ntpdate ntp.ubuntu.com
 
   sudo apt-get update
   sudo apt-get dist-upgrade -q -y --force-yes 
@@ -65,8 +66,54 @@ apt_clean() {
   sudo apt-get autoclean -y
 }
 
-install_ruby() {
-  if ! command -v rbenv >/dev/null 2>&1; then
+install_chruby() {
+
+  if [ ! `which ruby-install` ]; then
+    msg "installing ruby-install"
+    mkdir $HOME/tmp 
+    cd $HOME/tmp
+    # Install Ruby. Skip if you've already done this.
+    wget -O ruby-install.tar.gz \
+      https://github.com/postmodern/ruby-install/archive/v0.5.0.tar.gz
+    tar -xzvf ruby-install.tar.gz
+    cd ruby-install-*
+    make update
+    sudo make install
+  fi
+
+  if [ ! `which chruby-exec` ]; then
+    msg "installing chruby"
+    cd $HOME/tmp
+    wget -O chruby.tar.gz \
+      https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz
+    tar -xzvf chruby.tar.gz
+    cd chruby-*
+    sudo make install
+    echo "source /usr/local/share/chruby/chruby.sh" >> $HOME/.bashrc
+    echo "
+if [[ -f ./.ruby_version ]]; then
+  chruby \`cat ./.ruby_version\`
+else
+  chruby \`chruby | head -n 1 | cut -c4-\`
+fi" >> $HOME/.bashrc
+
+  fi
+
+  if [[ ! -d "$HOME/.rubies" ]]; then
+    msg "ruby install"
+    version=
+    ruby-install ruby $RUBY 
+    source /usr/local/share/chruby/chruby.sh && chruby `chruby`
+
+    msg "bundle install"
+    which bundle || gem install bundler
+    cd /vagrant
+    bundle install
+  fi
+}
+
+install_rbenv() {
+  if [ ! `which rbenv` ]; then
     msg "installing rbenv"
     git clone git://github.com/sstephenson/rbenv.git $HOME/.rbenv
 
@@ -98,10 +145,10 @@ install_ruby() {
 }
 
 install_dotfiles() {
-  msg "Installing $user dotfiles"
+  msg "Installing $USER dotfiles"
   if [[ ! -d $HOME/dotfiles ]]; then 
     msg "installing dotfiles" 
-    git clone https://github.com/$user/dotfiles.git $HOME/dotfiles
+    git clone https://github.com/$USER/dotfiles.git $HOME/dotfiles
     bash $HOME/dotfiles/setup.dotfiles.sh
   else
     msg "updating dotfiles" 
@@ -110,16 +157,11 @@ install_dotfiles() {
   fi
 }
 
-bundle_install() {
-  cd /vagrant
-  bundle install
-}
-
 apt_3rd_party
 apt_upgrade
 apt_core
 postgres
 apt_clean
 
-install_ruby
+install_chruby
 install_dotfiles
