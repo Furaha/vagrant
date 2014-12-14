@@ -21,8 +21,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # args:
-  #   1 user to copy dotfiles
-  #   2 ruby version to install
-  config.vm.provision :shell, :path => "bootstrap.sh", 
-    :args => [ENV['USER'], '2.1.5' ], privileged: false
+  #   $1 clone dotfiles for this user from github
+  #   $2 ruby version to install; one of:
+  #      a. .ruby_version (read automatically if available)
+  #      b. provide a ruby version here
+  #      c. if not provided then ruby-install default ruby
+  config.vm.provision :shell, :path => 
+  "https://raw.githubusercontent.com/Furaha/vagrant/master/bootstrap.sh", 
+    :args => [ENV['USER'], '2.1.5' ], 
+    privileged: false
 end

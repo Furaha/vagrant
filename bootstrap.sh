@@ -27,7 +27,7 @@ apt_3rd_party() {
     sudo sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ \
       $(lsb_release -sc)-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
     wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
-      apt-key add -
+      sudo apt-key add -
   fi
 }
 
@@ -101,8 +101,12 @@ fi" >> $HOME/.bashrc
 
   if [[ ! -d "$HOME/.rubies" ]]; then
     msg "ruby install"
-    version=
-    ruby-install ruby $RUBY 
+    if [[ -f /vagrant/.ruby_version ]]; then
+      RUBY=`cat /vagrant/.ruby_version`
+      ruby-install ruby "${RUBY#*-}" 
+    else
+      ruby-install ruby $RUBY 
+    fi
     source /usr/local/share/chruby/chruby.sh && chruby `chruby`
 
     msg "bundle install"
