@@ -4,12 +4,22 @@
 
 # QuickStart
 
-Copy `Vagrantfile` and `botstrap.sh` to a directory and run `vagrant up`.
+In your project folder, 
+`wget https://github.com/Furaha/vagrant/raw/master/Vagrantfile &&
+vagrant up`
 
-Take a look at `install_ruby()` in bootstrap.sh if you'd like to specify a ruby
-version
+## Ruby version
 
-# Description
+If you want to specify a ruby version either provide a `.ruby_version` file or
+edit Vagrantfile prior to running the provisioner
+
+## dotfiles
+
+Provisioner git clones `https://github.com/$user/dotfiles` and runs `bash setup.dotfiles.sh`.
+
+# Old Shit. Ignore
+
+## Description
 
 My scripts to build and/or package a basebox.
 
@@ -25,7 +35,7 @@ This should get you started with local rails 4 development.
 
 You can download a built 32bit box from https://www.dropbox.com/s/zrvr0ppv24m6cxg/furaha32.ruby.2.1.0.rails.4.0.2.box
 
-# Usage
+## Usage
 
 For i386 `vagrant box add cloud32 http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-i386-vagrant-disk1.box` 
 
@@ -43,7 +53,7 @@ For amd64 `vagrant box add cloud64 http://cloud-images.ubuntu.com/vagrant/precis
 
 `vagrant ssh`
 
-# Packaging
+## Packaging
 
 Only do this if you want to package your own box for distribution
 
@@ -70,7 +80,7 @@ In VirtualBox, click on `settings` for your machine and under
 
 `vagrant package` should create a box file for you to use 
 
-# Note on GuestAdditions
+## Note on GuestAdditions
 
 I had trouble running `vagrant plugins install vagrant-vbguest` so here's
 instructions on how to manually update virtualbox GuestAdditions
@@ -98,7 +108,7 @@ make sure this is the version of virtualbox you are running
 
 `vagrant reload --provision`
 
-# Credit
+## Credit
 
 Thanks to http://vmassuchetto.github.io/2013/08/14/reducing-a-vagrant-box-size/
 for showing me how it's done
