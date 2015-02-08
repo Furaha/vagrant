@@ -66,6 +66,8 @@ If `$user` is not defined in the `Vagranfile` then the default repo it clones is
 If using `arafatm/dotfiles`, take a look at `home/.bash/aliasesdev` to see some
 default aliases I have defined
 
+While I created most of the aliases in  http://ryan.mcgeary.org/2011/02/09/vendor-everything-still-applies/ , I made a few changes. Take a look at `~/dotfiles/home/.bash/aliasesdev` to see my changes.
+
 ## ssh
 
 Note that my dotfiles expect that you're using ssh-agent either on the host with ssh.agent.forwarding or on the guest directly after copying your ssh keys.
