@@ -13,8 +13,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Either use i386 or amd64 versions
   config.vm.box       = 'ubuntu/trusty32'
 
-  config.vm.hostname  = 'vm'
+  config.vm.hostname  = 'vm.furaha.com'
   config.ssh.forward_agent = true
+
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  
 
   config.vm.provider "virtualbox" do |v|
     v.memory = 1024
@@ -26,8 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #      a. .ruby_version (read automatically if available)
   #      b. provide a ruby version here
   #      c. if not provided then ruby-install default ruby
-  config.vm.provision :shell, :path => 
-  "https://raw.githubusercontent.com/Furaha/vagrant/master/bootstrap.sh", 
-    :args => [ENV['USER'], '2.1.5' ], 
+  config.vm.provision :shell, :path => "./bootstrap.sh", 
+    :args => ['arafatm', '2.1.5' ], 
     privileged: false
 end

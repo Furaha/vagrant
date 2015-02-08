@@ -1,8 +1,18 @@
 #!/usr/bin/env bash 
 
+set -e
+
 export DEBIAN_FRONTEND=noninteractive 
-USER=$1
-RUBY=$2
+
+USER=
+
+if [[ -z $1 ]]; then
+  USER=arafatm
+else
+  USER=$1
+fi
+
+INSTALLED=
 
 msg() { echo "*" echo "*"
   echo "*****************************************************************"
@@ -21,23 +31,26 @@ apt_3rd_party() {
     sudo add-apt-repository ppa:chris-lea/node.js
   fi
 
+  # Using system postgresql
   # postgresql repo
-  if [ ! -f /etc/apt/sources.list.d/pgdg.list ]; then 
-    msg "adding postgresql repo"
-    sudo sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ \
-      $(lsb_release -sc)-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
-    wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
-      sudo apt-key add -
-  fi
+  #if [ ! -f /etc/apt/sources.list.d/pgdg.list ]; then 
+  #  msg "adding postgresql repo"
+  #  sudo sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ \
+    #    $(lsb_release -sc)-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
+  #  wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
+    #    sudo apt-key add -
+  #fi
 }
 
 apt_upgrade() {
-  msg "APT update & upgrade"
 
-  sudo ntpdate ntp.ubuntu.com
-
-  sudo apt-get update
-  sudo apt-get dist-upgrade -q -y --force-yes 
+  if [ "$[$(date +%s) - $(stat -c %Z /var/lib/apt/periodic/update-success-stamp)]" -ge 3600 ]; then
+    msg "APT update & upgrade"
+    sudo ntpdate ntp.ubuntu.com
+    sudo apt-get update
+    sudo apt-get dist-upgrade -q -y --force-yes 
+    INSTALLED="$INSTALLED apt-upgrade"
+  fi
 }
 
 apt_core() {
@@ -49,14 +62,7 @@ apt_core() {
   pkgs="$pkgs imagemagick libmagickwand-dev"
 
   msg "install pkgs"
-  echo "$pkgs"
   apt "$pkgs"
-}
-
-postgres() {
-  msg "postgresql"
-  apt "postgresql-9.3 libpq-dev"
-  sudo -u postgres createuser vagrant -s
 }
 
 apt_clean() {
@@ -66,54 +72,25 @@ apt_clean() {
   sudo apt-get autoclean -y
 }
 
-install_chruby() {
+install_postgres() {
+  msg "postgresql"
+  apt "postgresql-9.3 libpq-dev postgresql-server-dev-9.3 postgresql-contrib-9.3"
 
-  if [ ! `which ruby-install` ]; then
-    msg "installing ruby-install"
-    mkdir $HOME/tmp 
-    cd $HOME/tmp
-    # Install Ruby. Skip if you've already done this.
-    wget -O ruby-install.tar.gz \
-      https://github.com/postmodern/ruby-install/archive/v0.5.0.tar.gz
-    tar -xzvf ruby-install.tar.gz
-    cd ruby-install-*
-    make update
-    sudo make install
+  # install pgcrypto module
+  if [[ ! $(sudo -u postgres psql template1 -c '\dx') =~ pgcrypto ]]; then
+    sudo -u postgres psql template1 -c 'create extension pgcrypto'
   fi
 
-  if [ ! `which chruby-exec` ]; then
-    msg "installing chruby"
-    cd $HOME/tmp
-    wget -O chruby.tar.gz \
-      https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz
-    tar -xzvf chruby.tar.gz
-    cd chruby-*
-    sudo make install
-    echo "source /usr/local/share/chruby/chruby.sh" >> $HOME/.bashrc
-    echo "
-if [[ -f ./.ruby_version ]]; then
-  chruby \`cat ./.ruby_version\`
-else
-  chruby \`chruby | head -n 1 | cut -c4-\`
-fi" >> $HOME/.bashrc
-
+  # Add rails user with createdb
+  if [[ ! $(sudo -u postgres psql template1 -c '\du') =~ rails ]]; then
+    sudo -u postgres psql -c \
+      "create user rails with createdb password 'railspass'"
   fi
 
-  if [[ ! -d "$HOME/.rubies" ]]; then
-    msg "ruby install"
-    if [[ -f /vagrant/.ruby_version ]]; then
-      RUBY=`cat /vagrant/.ruby_version`
-      ruby-install ruby "${RUBY#*-}" 
-    else
-      ruby-install ruby $RUBY 
-    fi
-    source /usr/local/share/chruby/chruby.sh && chruby `chruby`
+  sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
+    > /etc/postgresql/9.3/main/pg_hba.conf" 
 
-    msg "bundle install"
-    which bundle || gem install bundler
-    cd /vagrant
-    bundle install
-  fi
+  INSTALLED="$INSTALLED postgres"
 }
 
 install_rbenv() {
@@ -137,15 +114,18 @@ install_rbenv() {
   rbenv=$HOME/.rbenv/bin/rbenv
 
   #LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1`
-  LATEST='2.1.5'
+  #LATEST='2.1.5'
 
-  if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
-    CONFIGURE_OPTS="--disable-install-doc" $rbenv install -v $LATEST 
-    $rbenv global  $LATEST
-    $rbenv rehash
-  else
-    echo "ruby $LATEST already installed"
-  fi
+  # Install a ruby
+  # if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
+  #   CONFIGURE_OPTS="--disable-install-doc" $rbenv install -v $LATEST 
+  #   $rbenv global  $LATEST
+  #   $rbenv rehash
+  # else
+  #   echo "ruby $LATEST already installed"
+  # fi
+
+  INSTALLED="$INSTALLED rbenv"
 }
 
 install_dotfiles() {
@@ -159,13 +139,19 @@ install_dotfiles() {
     cd $HOME/dotfiles
     git pull
   fi
+  INSTALLED="$INSTALLED dotfiles"
+}
+
+congrats() {
+  echo "Install complete"
 }
 
 apt_3rd_party
 apt_upgrade
 apt_core
-postgres
-apt_clean
 
-install_chruby
+install_postgres
+install_rbenv
 install_dotfiles
+
+apt_clean
