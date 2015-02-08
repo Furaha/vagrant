@@ -37,6 +37,16 @@ If `$user` is not defined in the `Vagranfile` then the default repo it clones is
 If using `arafatm/dotfiles`, take a look at `home/.bash/aliasesdev` to see some
 default aliases I have defined
 
+## ssh
+
+Note that my dotfiles expect that you're using ssh-agent either on the host with ssh.agent.forwarding or on the guest directly after copying your ssh keys.
+
+I recommend the first option so you only have to run it on the host.
+
+See https://developer.github.com/guides/using-ssh-agent-forwarding/ for more info. 
+
+NOTE: This means I recommend you use the ssh clone URL instead of the HTTPS clone URL. 
+
 # Old Shit. Ignore
 
 ## Description
