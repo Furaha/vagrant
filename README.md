@@ -1,21 +1,41 @@
-# Requirements
-
-- [Vagrant](http://docs.vagrantup.com/v2/)
 
 # QuickStart
 
-In your project folder, 
-`wget https://github.com/Furaha/vagrant/raw/master/Vagrantfile &&
-vagrant up`
+
+`wget -qO- https://github.com/Furaha/vagrant/archive/1.0.1.tar.gz | tar xvz --strip 1 && vagrant up`
+
+
+# What Is Included
 
 ## Ruby version
 
-If you want to specify a ruby version either provide a `.ruby_version` file or
-edit Vagrantfile prior to running the provisioner
+Your project folder root should have a `.ruby_version` file that specified the
+version this project uses.
+
+e.g. `2.1.5`
+
+If you don't have the file, you can use `rbenv local 2.1.5` to generate it.
+
+Make sure that rbenv has that version installed by checking `rbenv versions`.
+To install a specific version, do `rbenv install 2.1.5`. Check `rbenv install
+-l` to see what versions are available for install.
+
+## Postgresql
+
+Postgresql 9.3 is installed by default.
+
+Also creates a `rails` user that can be used in your rails
+`config/database.yaml` to create/manage your rails DB.
 
 ## dotfiles
 
-Provisioner git clones `https://github.com/$user/dotfiles` and runs `bash setup.dotfiles.sh`.
+Provisioner git clones `https://github.com/$user/dotfiles` and runs `bash
+setup.dotfiles.sh`.
+
+If `$user` is not defined in the `Vagranfile` then the default repo it clones is `arafatm/dotfiles`.
+
+If using `arafatm/dotfiles`, take a look at `home/.bash/aliasesdev` to see some
+default aliases I have defined
 
 # Old Shit. Ignore
 
