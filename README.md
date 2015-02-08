@@ -4,6 +4,35 @@
 
 `wget -qO- https://github.com/Furaha/vagrant/releases/latest | tar xvz --strip 1 && vagrant up`
 
+This create the vagrantfile and bootstrap script to create your new vagrant box
+
+## Ruby/Rails project
+
+To create a new rails project (or clone an existing one), follow these steps
+- vagrant ssh
+- Either `mkdir <project>` or `cd <project>` if it exists
+- If you don't have a `ruby_version` file, then `rbenv install <version>`
+- Make sure you have the right ruby version installed `rbenv versions`
+- `rbenv install <version>` if you need to
+- Check `ruby -v` to ensure you're using the right ruby version
+- `gem install bundler` if you just did an rbenv install
+- Generate a Gemfile if you don't have one yet
+- `binit` to install the gems required for this project
+- `b rake db:create` to make sure that the rails project can create the databases
+
+Have fun!
+
+NOTE: `DO NOT USE SYSTEM RUBY/GEMS`. Use `b <command>` to make sure you're
+always using the project's ruby/gems. e.g. `b rspec spec/`
+
+NOTE: Using `binit` allows you package the project's gems so you're always
+using the right version. See
+http://ryan.mcgeary.org/2011/02/09/vendor-everything-still-applies/ for more
+info
+
+NOTE: To see what `binit` does, type `alias binit`. This is defined in
+`~/.bash/aliasesdev` which is installed when cloning my dotfiles as part of the
+bootstrap. To see what `bundle_init` does, type `type bundle_init`.
 
 # What Is Included
 
@@ -46,6 +75,7 @@ I recommend the first option so you only have to run it on the host.
 See https://developer.github.com/guides/using-ssh-agent-forwarding/ for more info. 
 
 NOTE: This means I recommend you use the ssh clone URL instead of the HTTPS clone URL. 
+
 
 # Old Shit. Ignore
 
