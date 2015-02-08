@@ -2,7 +2,7 @@
 # QuickStart
 
 
-`wget -qO- https://github.com/Furaha/vagrant/archive/1.0.1.tar.gz | tar xvz --strip 1 && vagrant up`
+`wget -qO- https://github.com/Furaha/vagrant/releases/latest | tar xvz --strip 1 && vagrant up`
 
 
 # What Is Included
