@@ -6,6 +6,12 @@
 
 This create the vagrantfile and bootstrap script to create your new vagrant box
 
+NOTE: If the `vagrant up` fails at some point (shouldn't happen, but murphy):
+- vagrant ssh
+- cd to the directory with bootstrap.sh (probably /vagrant)
+- run `bash bootstrap.sh`.
+This should continue from the last error.
+
 ## Ruby/Rails project
 
 To create a new rails project (or clone an existing one), follow these steps
