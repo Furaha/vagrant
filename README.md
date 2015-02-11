@@ -60,7 +60,7 @@ To install a specific version, do `rbenv install 2.1.5`. Check `rbenv install
 
 Postgresql 9.3 is installed by default.
 
-Also creates a `rails` user that can be used in your rails
+Also creates a `rails` user with password `railspass` that can be used in your rails
 `config/database.yaml` to create/manage your rails DB.
 
 ## dotfiles
