@@ -85,10 +85,10 @@ install_postgres() {
   if [[ ! $(sudo -u postgres psql template1 -c '\du') =~ rails ]]; then
     sudo -u postgres psql -c \
       "create user rails with createdb password 'railspass'"
+    sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
+      > /etc/postgresql/9.3/main/pg_hba.conf" 
+    sudo /etc/init.d/postgresql restart
   fi
-
-  sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
-    > /etc/postgresql/9.3/main/pg_hba.conf" 
 
   INSTALLED="$INSTALLED postgres"
 }
