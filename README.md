@@ -17,9 +17,9 @@ This should continue from the last error.
 To create a new rails project (or clone an existing one), follow these steps
 - vagrant ssh
 - Either `mkdir <project>` or `cd <project>` if it exists
-- If you don't have a `ruby_version` file, then `rbenv local <version>`
+- If you don't have a `.ruby_version` file, then `rbenv local <version>`
 - Check if you already have `<version>` installed by checking `rbenv versions`
-- `rbenv install` will install the version specified in your `ruby_version` if you don't already have it
+- `rbenv install` will install the version specified in your `.ruby_version` if you don't already have it
 - Check `ruby -v` to ensure you're using the right ruby version
 - `gem install bundler` if you just did an rbenv install
 - Generate a Gemfile if you don't have one yet
