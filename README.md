@@ -17,14 +17,15 @@ This should continue from the last error.
 To create a new rails project (or clone an existing one), follow these steps
 - vagrant ssh
 - Either `mkdir <project>` or `cd <project>` if it exists
-- If you don't have a `ruby_version` file, then `rbenv install <version>`
-- Make sure you have the right ruby version installed `rbenv versions`
-- `rbenv install <version>` if you need to
+- If you don't have a `ruby_version` file, then `rbenv local <version>`
+- Check if you already have `<version>` installed by checking `rbenv versions`
+- `rbenv install` will install the version specified in your `ruby_version` if you don't already have it
 - Check `ruby -v` to ensure you're using the right ruby version
 - `gem install bundler` if you just did an rbenv install
 - Generate a Gemfile if you don't have one yet
 - `binit` to install the gems required for this project
 - `b rake db:create` to make sure that the rails project can create the databases
+  - `alias | grep b` to see what 'bundle' aliases are set up for you.
 
 Have fun!
 
