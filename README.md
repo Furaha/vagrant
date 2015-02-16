@@ -2,7 +2,7 @@
 # QuickStart
 
 
-`wget -qO- https://github.com/Furaha/vagrant/archive/latest.tar.gz | tar xvz --strip 1 && vagrant up`
+`wget -qO- https://github.com/Furaha/vagrant/archive/1.6.tar.gz | tar xvz --strip 1 && vagrant up`
 
 This create the vagrantfile and bootstrap script to create your new vagrant box
 
