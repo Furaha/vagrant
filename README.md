@@ -86,6 +86,12 @@ default aliases I have defined
 
 While I created most of the aliases in  http://ryan.mcgeary.org/2011/02/09/vendor-everything-still-applies/ , I made a few changes. Take a look at `~/dotfiles/home/.bash/aliasesdev` to see my changes.
 
+To see some of the aliases and functions I have defined in my dotfiles, type `alias`.
+
+To see rake specific aliases, type `alias | rake`
+
+Hint: If you don't see my aliases defined then you probably don't have .bashrc loaded. Do a `source ~/.bashrc`. This should load automatically on each new shell.
+
 ## ssh
 
 Note that my dotfiles expect that you're using ssh-agent either on the host with ssh.agent.forwarding or on the guest directly after copying your ssh keys.
