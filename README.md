@@ -1,4 +1,15 @@
 
+# Running bootstrap.sh seperately
+
+In your existing vagrant box, download `boostrap.sh` to your home directory
+
+Run `bash bootstrap.sh`. This will install postgresql and rbenv
+
+In the project, if there is a `.ruby-version` file already existing, you can then do `rbenv install`. Then do `source ~/.bashrc` to reload the environment. Check `ruby -v` gives you the same ruby version as that in `.ruby-version`.
+
+Now you can `gem install bundler` followed by `binit` to set up the project.
+
+
 # QuickStart
 
 
