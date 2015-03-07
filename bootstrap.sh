@@ -26,18 +26,18 @@ apt() {
 
 apt_3rd_party() {
   # node.js  repo
-  if [ ! -f /etc/apt/sources.list.d/chris-lea*.list ]; then 
+  if [ ! -f /etc/apt/sources.list.d/nodesource.list ]; then 
     msg "adding node.js repo"
-    curl -sL https://deb.nodesource.com/setup | bash -
+    curl -sL https://deb.nodesource.com/setup | sudo bash -
   fi
 }
 
 apt_upgrade() {
-
-  if [ "$[$(date +%s) - $(stat -c %Z /var/lib/apt/periodic/update-success-stamp)]" -ge 3600 ]; then
-    msg "APT update & upgrade"
-    sudo ntpdate ntp.ubuntu.com
+  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]
+  then
+    msg "APT update"
     sudo apt-get update
+    msg "APT dist-upgrade"
     sudo apt-get dist-upgrade -q -y --force-yes 
     INSTALLED="$INSTALLED apt-upgrade"
   fi
@@ -45,14 +45,15 @@ apt_upgrade() {
 
 apt_core() {
 
-  pkgs="curl git screen tmux vim zerofree"
+  pkgs="curl git screen tmux vim zerofree ntpdate"
   pkgs="$pkgs zlib1g-dev build-essential libssl-dev libreadline-dev"
-  pkgs="$pkgs libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev" 
+  pkgs="$pkgs libyaml-dev libxml2-dev libxslt1-dev" 
   pkgs="$pkgs libcurl4-openssl-dev python-software-properties nodejs"
   pkgs="$pkgs imagemagick libmagickwand-dev"
 
   msg "install pkgs"
   apt "$pkgs"
+  sudo ntpdate -u pool.ntp.org
 }
 
 apt_clean() {
@@ -64,19 +65,22 @@ apt_clean() {
 
 install_postgres() {
   msg "postgresql"
-  apt "postgresql-9.3 libpq-dev postgresql-server-dev-9.3 postgresql-contrib-9.3"
+  apt "postgresql libpq-dev postgresql-server-dev-all postgresql-contrib"
 
   # install pgcrypto module
-  if [[ ! $(sudo -u postgres psql template1 -c '\dx') =~ pgcrypto ]]; then
-    sudo -u postgres psql template1 -c 'create extension pgcrypto'
-  fi
+  #if [[ ! $(sudo -u postgres psql template1 -c '\dx') =~ pgcrypto ]]; then
+  #  sudo -u postgres psql template1 -c 'create extension pgcrypto'
+  #fi
 
-  # Add rails user with createdb
+  # Add rails user with superuser
+  msg "Check if rails user allready exists"
   if [[ ! $(sudo -u postgres psql template1 -c '\du') =~ rails ]]; then
-    sudo -u postgres psql -c \
+    msg "Add rails superuser"
+    sudo -u postgres psql template1 -c \
       "create user rails with superuser password 'railspass'"
-    sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
-      > /etc/postgresql/9.3/main/pg_hba.conf" 
+    #sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
+    #  > /etc/postgresql/9.3/main/pg_hba.conf" 
+    msg "restart postgresql"
     sudo /etc/init.d/postgresql restart
   fi
 
