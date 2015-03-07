@@ -28,18 +28,8 @@ apt_3rd_party() {
   # node.js  repo
   if [ ! -f /etc/apt/sources.list.d/chris-lea*.list ]; then 
     msg "adding node.js repo"
-    sudo add-apt-repository ppa:chris-lea/node.js
+    curl -sL https://deb.nodesource.com/setup | bash -
   fi
-
-  # Using system postgresql
-  # postgresql repo
-  #if [ ! -f /etc/apt/sources.list.d/pgdg.list ]; then 
-  #  msg "adding postgresql repo"
-  #  sudo sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ \
-    #    $(lsb_release -sc)-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
-  #  wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
-    #    sudo apt-key add -
-  #fi
 }
 
 apt_upgrade() {
