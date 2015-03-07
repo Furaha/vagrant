@@ -11,7 +11,7 @@ end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Either use i386 or amd64 versions
-  config.vm.box       = 'ubuntu/trusty32'
+  config.vm.box       = 'pixative/debian-wheezy-64'
 
   config.vm.hostname  = 'vm.furaha.com'
   config.ssh.forward_agent = true
