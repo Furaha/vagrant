@@ -12,7 +12,7 @@ Now you can `gem install bundler` followed by `binit` to set up the project.
 
 # QuickStart
 
-`git clone git@github.com:furaha/vagrant && vagrant up`
+`git clone git@github.com:furaha/vagrant && cd vagrant &&  vagrant up`
 
 This will clone the vagrantfile and bootstrap script
 
