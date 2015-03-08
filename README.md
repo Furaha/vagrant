@@ -12,10 +12,9 @@ Now you can `gem install bundler` followed by `binit` to set up the project.
 
 # QuickStart
 
+`git clone git@github.com:furaha/vagrant && vagrant up`
 
-`wget -qO- https://github.com/Furaha/vagrant/archive/1.6.tar.gz | tar xvz --strip 1 && vagrant up`
-
-This create the vagrantfile and bootstrap script to create your new vagrant box
+This will clone the vagrantfile and bootstrap script
 
 NOTE: If the `vagrant up` fails at some point (shouldn't happen, but murphy):
 - vagrant ssh
