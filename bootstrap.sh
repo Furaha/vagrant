@@ -80,7 +80,7 @@ install_postgres() {
       "create user rails with superuser password 'railspass'"
   fi
   sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
-    > /etc/postgresql/9.1/main/pg_hba.conf" 
+    > /etc/postgresql/9.*/main/pg_hba.conf" 
   msg "restart postgresql"
   sudo /etc/init.d/postgresql restart
 
