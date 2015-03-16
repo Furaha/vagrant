@@ -79,8 +79,13 @@ install_postgres() {
     sudo -u postgres psql template1 -c \
       "create user rails with superuser password 'railspass'"
   fi
-  sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
-    > /etc/postgresql/9.*/main/pg_hba.conf" 
+  if [[ ! -d /etc/postgresql/9.1 ]]; then 
+    sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
+      > /etc/postgresql/9.1/main/pg_hba.conf" 
+  if [[ ! -d /etc/postgresql/9.1 ]]; then 
+    sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
+      > /etc/postgresql/9.3/main/pg_hba.conf" 
+  fi
   msg "restart postgresql"
   sudo /etc/init.d/postgresql restart
 
