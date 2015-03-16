@@ -82,7 +82,8 @@ install_postgres() {
   if [[ ! -d /etc/postgresql/9.1 ]]; then 
     sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
       > /etc/postgresql/9.1/main/pg_hba.conf" 
-  if [[ ! -d /etc/postgresql/9.1 ]]; then 
+  fi
+  if [[ ! -d /etc/postgresql/9.3 ]]; then 
     sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
       > /etc/postgresql/9.3/main/pg_hba.conf" 
   fi
