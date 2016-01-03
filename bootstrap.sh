@@ -12,7 +12,7 @@ else
   USER=$1
 fi
 
-INSTALLED=
+INSTALLED="Installed:\n"
 
 msg() { echo "*" echo "*"
   echo "*****************************************************************"
@@ -39,7 +39,7 @@ apt_upgrade() {
     sudo apt-get update
     msg "APT dist-upgrade"
     sudo apt-get dist-upgrade -q -y --force-yes 
-    INSTALLED="$INSTALLED apt-upgrade"
+    INSTALLED += "- apt-upgrade"
   fi
 }
 
@@ -61,6 +61,8 @@ apt_clean() {
   sudo apt-get -y autoremove
   sudo apt-get -y clean
   sudo apt-get autoclean -y
+
+  INSTALLED+="- apt-clean"
 }
 
 install_postgres() {
@@ -84,7 +86,7 @@ install_postgres() {
   msg "restart postgresql"
   sudo /etc/init.d/postgresql restart
 
-  INSTALLED="$INSTALLED postgres"
+  INSTALLED += "- postgres"
 }
 
 install_rbenv() {
@@ -107,19 +109,21 @@ install_rbenv() {
 
   rbenv=$HOME/.rbenv/bin/rbenv
 
-  #LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1`
+  LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1`
+
   #LATEST='2.1.5'
 
   # Install a ruby
-  # if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
-  #   CONFIGURE_OPTS="--disable-install-doc" $rbenv install -v $LATEST 
-  #   $rbenv global  $LATEST
-  #   $rbenv rehash
-  # else
-  #   echo "ruby $LATEST already installed"
-  # fi
+  if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
+    CONFIGURE_OPTS="--disable-install-doc" $rbenv install -v $LATEST 
+    $rbenv global  $LATEST
+    $rbenv rehash
+    echo "Installed ruby $LATEST"
+  else
+    echo "ruby $LATEST already installed"
+  fi
 
-  INSTALLED="$INSTALLED rbenv"
+  INSTALLED+="- rbenv"
 }
 
 install_dotfiles() {
@@ -133,11 +137,11 @@ install_dotfiles() {
     cd $HOME/dotfiles
     git pull
   fi
-  INSTALLED="$INSTALLED dotfiles"
+  INSTALLED+="- dotfiles"
 }
 
 congrats() {
-  echo "Install complete"
+  echo "$INSTALLED"
 }
 
 apt_3rd_party
@@ -149,3 +153,5 @@ install_rbenv
 install_dotfiles
 
 apt_clean
+
+congrats
